@@ -6,18 +6,19 @@ console.log("NODECELLAR_PORT: " + process.env.NODECELLAR_PORT);
 var express = require('express'),
     path = require('path'),
     http = require('http'),
-    wine = require('./routes/wines'),
-    fs = require('fs'),
-    morgan = require('morgan');
+    wine = require('./routes/wines');
+
+var fs = require('fs');
+var morgan = require('morgan');
 
 var app = express();
 
-var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'})
+var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'});
 
 app.configure(function () {
     app.set('port', process.env.NODECELLAR_PORT || 3000);
     /* app.use(express.logger('dev'));  /* 'default', 'short', 'tiny', 'dev' */
-    app.use(morgan('combined', {stream: accessLogStream}))
+    app.use(morgan('combined', {stream: accessLogStream}));
     app.use(express.bodyParser()),
     app.use(express.static(path.join(__dirname, 'public')));
 });
