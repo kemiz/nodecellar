@@ -4,18 +4,20 @@ console.log("MONGO_PORT: " + process.env.MONGO_PORT);
 console.log("NODECELLAR_PORT: " + process.env.NODECELLAR_PORT);
 
 var express = require('express'),
+    fs = require('fs'),
+    morgan = require('morgan'),
     path = require('path'),
     http = require('http'),
     wine = require('./routes/wines');
 
 var app = express();
 
-app.configure(function () {
-    app.set('port', process.env.NODECELLAR_PORT || 3000);
-    app.use(express.logger('dev'));  /* 'default', 'short', 'tiny', 'dev' */
-    app.use(express.bodyParser()),
-    app.use(express.static(path.join(__dirname, 'public')));
-});
+var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'});
+
+app.set('port', process.env.NODECELLAR_PORT || 3000);
+app.use(express.bodyParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(morgan('combined', {stream: accessLogStream}));
 
 app.get('/wines', wine.findAll);
 app.get('/wines/:id', wine.findById);
