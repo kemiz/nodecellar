@@ -15,7 +15,6 @@ var app = express();
 var accessLogStream = fs.createWriteStream(__dirname + '/access.log', {flags: 'a'});
 
 app.set('port', process.env.NODECELLAR_PORT || 3000);
-/* app.use(express.logger('dev')); 'default', 'short', 'tiny', 'dev' */
 app.use(express.bodyParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(morgan('combined', {stream: accessLogStream}));
